@@ -1,0 +1,36 @@
+<nav class="navbar" [class.mobile-open]="uiService.isSidebarOpen()">
+  <div class="nav-container">
+    <a routerLink="/" class="logo">
+      <span class="logo-icon">✨</span>
+      <span class="logo-text">Social Hub</span>
+    </a>
+
+    <!-- Mobile Toggle -->
+    <button class="mobile-toggle" (click)="toggleMenu()">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+
+    <div class="nav-links" [class.show]="uiService.isSidebarOpen()">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+        (click)="closeMenu()">Home</a>
+      <a routerLink="/about" routerLinkActive="active" (click)="closeMenu()">About</a>
+      <a *ngIf="authService.isLoggedIn()" routerLink="/dashboard" routerLinkActive="active"
+        (click)="closeMenu()">Dashboard</a>
+    </div>
+
+    <div class="nav-actions" [class.show]="uiService.isSidebarOpen()">
+      <ng-container *ngIf="!authService.isLoggedIn(); else userActions">
+        <a routerLink="/login" class="btn btn-text" (click)="closeMenu()">Login</a>
+        <a routerLink="/signup" class="btn btn-primary" (click)="closeMenu()">Sign Up</a>
+      </ng-container>
+      <ng-template #userActions>
+        <div class="user-block">
+          <span class="user-info">Hi, {{ authService.currentUser()?.username }}</span>
+          <button (click)="logout()" class="btn btn-outline">Logout</button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</nav>

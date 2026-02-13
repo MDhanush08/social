@@ -1,0 +1,117 @@
+<div class="home-container">
+  <!-- Unauthenticated Landing Page -->
+  <ng-container *ngIf="!authService.isLoggedIn()">
+    <section class="hero">
+      <div class="overlay"></div>
+      <div class="hero-content">
+        <h1 class="hero-title">Experience the Next Level of <span>Social Hub</span></h1>
+        <p class="hero-subtitle">A powerful platform built with Angular, Node.js, and MongoDB. Secure, fast, and
+          beautiful.</p>
+        <div class="hero-btns">
+          <a routerLink="/signup" class="btn btn-primary btn-lg">Get Started</a>
+          <a href="#features" class="btn btn-outline btn-lg">Learn More</a>
+        </div>
+      </div>
+
+      <div class="floating-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+      </div>
+    </section>
+
+    <section id="features" class="features">
+      <div class="section-header">
+        <h2>Why Choose Us?</h2>
+        <p>Building the future with modern tech stacks.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="icon">🚀</div>
+          <h3>High Performance</h3>
+          <p>Optimized with Angular's latest features for blazing fast speeds.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🛡️</div>
+          <h3>Secure Auth</h3>
+          <p>JWT-based authentication with encrypted passwords.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🎨</div>
+          <h3>Premium Design</h3>
+          <p>Aesthetic UI with glassmorphism and smooth animations.</p>
+        </div>
+      </div>
+    </section>
+  </ng-container>
+
+  <!-- Authenticated AI Chat Hub -->
+  <ng-container *ngIf="authService.isLoggedIn()">
+    <div class="chat-hub">
+
+      <div class="chat-messages" #scrollMe>
+        <ng-container *ngFor="let msg of messages()">
+          <div *ngIf="msg" [class.assistant]="msg.role === 'assistant'" class="message">
+            <div class="avatar">
+              {{ msg.role === 'assistant' ? '🤖' : '👤' }}
+            </div>
+            <div class="message-body">
+
+              <!-- Standard Text / Legacy Message -->
+              <div *ngIf="!msg.data" class="message-content" [innerHTML]="msg.content"></div>
+
+              <!-- Structured AI Data - ONLY General Response -->
+              <div *ngIf="msg.data" class="ai-response-container">
+                <div *ngIf="msg.data.generalResponse" [innerHTML]="msg.data.generalResponse"></div>
+              </div>
+
+              <!-- User Uploaded Image Display -->
+              <img *ngIf="msg.image" [src]="msg.image" class="msg-image" />
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Loading Indicator -->
+        <div class="message assistant" *ngIf="isLoading()">
+          <div class="avatar">🤖</div>
+          <div class="message-body">
+            <div class="typing-indicator">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+
+        <div class="image-preview-bar" *ngIf="selectedImage">
+          <div class="preview-item">
+            <img [src]="selectedImage" />
+            <button (click)="removeImage()" class="remove-btn">×</button>
+          </div>
+        </div>
+
+        <div class="input-wrapper">
+          <label class="action-icon" title="Upload Image">
+            🖼️
+            <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+          </label>
+
+          <textarea [(ngModel)]="userInput" placeholder="Generate anything..."
+            (keydown.enter)="!isLoading() && sendMessage(); $event.preventDefault()"
+            [disabled]="isLoading()"></textarea>
+
+          <button (click)="sendMessage()" class="send-btn"
+            [disabled]="(!userInput.trim() && !selectedImage) || isLoading()">
+            <span *ngIf="!isLoading()">➞</span>
+            <span *ngIf="isLoading()" class="spinner"></span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </ng-container>
+</div>

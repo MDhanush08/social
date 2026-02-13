@@ -1,0 +1,17 @@
+<div class="dashboard-container">
+  <div class="welcome-section">
+    <h1>Dashboard</h1>
+    <p>Welcome, <span>{{ authService.currentUser()?.username }}</span>. Your social metrics and analytics will appear
+      here soon.</p>
+  </div>
+
+  <div class="empty-state">
+    <div class="glass-card">
+      <div class="icon">📊</div>
+      <h3>Analytics Coming Soon</h3>
+      <p>We are currently integrating your social media accounts. In the meantime, use our AI Assistant on the Home page
+        to optimize your posts!</p>
+      <a routerLink="/" class="btn-primary">Go to AI Assistant</a>
+    </div>
+  </div>
+</div>
