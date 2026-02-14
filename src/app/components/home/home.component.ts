@@ -31,6 +31,13 @@ export class HomeComponent implements OnInit {
 
   // New: Chips Logic Removed
 
+  // State for image preview
+  previewImage = signal<string | null>(null);
+
+  // Track selected chips per message ID or index
+  // Map of messageIndex -> Set<string> of selected chips
+  selectedChips = new Map<number, Set<string>>();
+
   @ViewChild('scrollMe') private myScrollContainer!: ElementRef;
 
   ngOnInit() {
@@ -43,18 +50,13 @@ export class HomeComponent implements OnInit {
     this.chatService.getHistory().subscribe({
       next: (history) => {
         if (history.length > 0) {
-          // Attempt to parse existing history if it's JSON
           const parsedHistory = history.map(msg => {
-            if (msg.role === 'assistant') {
-              try {
-                const parsed = JSON.parse(msg.content);
-                return { ...msg, data: parsed };
-              } catch (e) {
-                // Not JSON, keep as is
-                return msg;
-              }
+            // Parse data if string
+            let data = msg.data;
+            if (msg.role === 'assistant' && typeof msg.content === 'string') {
+              // Existing parse logic if needed, but data should be separate now
             }
-            return msg;
+            return { ...msg, data };
           });
           this.messages.set(parsedHistory);
         } else {
@@ -87,17 +89,80 @@ export class HomeComponent implements OnInit {
     this.selectedImage = null;
   }
 
+  // --- Chip Handling ---
+
+  toggleChip(msgIndex: number, chip: string) {
+    const currentSet = this.selectedChips.get(msgIndex) || new Set<string>();
+    if (currentSet.has(chip)) {
+      currentSet.delete(chip);
+    } else {
+      currentSet.add(chip);
+    }
+    this.selectedChips.set(msgIndex, currentSet);
+  }
+
+  isChipSelected(msgIndex: number, chip: string): boolean {
+    return this.selectedChips.get(msgIndex)?.has(chip) ?? false;
+  }
+
+  hasSelectedChips(msgIndex: number): boolean {
+    return (this.selectedChips.get(msgIndex)?.size ?? 0) > 0;
+  }
+
+  submitChips(msgIndex: number) {
+    const chipsSet = this.selectedChips.get(msgIndex);
+    if (!chipsSet || chipsSet.size === 0) return;
+
+    const selectedChipsList = Array.from(chipsSet);
+    const prompt = `Please provide the following based on the image: ${selectedChipsList.join(', ')}.`;
+
+    // Find the image from the *previous* user message
+    // msgIndex is the assistant message. The user message that triggered it should be msgIndex - 1.
+    // However, we should verify.
+    const history = this.messages();
+    const assistantMsg = history[msgIndex];
+    const relatedUserMsg = history[msgIndex - 1];
+
+    let imageToResend = this.selectedImage; // Default to current if exists (unlikely here)
+
+    if (relatedUserMsg && relatedUserMsg.role === 'user' && relatedUserMsg.image) {
+      imageToResend = relatedUserMsg.image;
+    }
+
+    if (!imageToResend && !this.selectedImage) {
+      // If we can't find the image, we can't contextually answer "Title for this image".
+      // But maybe the backend has history? usage suggests backend is stateless.
+      // We will try without image if logic fails, but ideally we send it.
+    }
+
+    // Reuse sendMessage logic but with constructed prompt and recovered image
+    this.sendConstructedMessage(prompt, imageToResend || null);
+
+    // Clear selection
+    this.selectedChips.delete(msgIndex);
+  }
+
+  // --- Image Preview ---
+  openPreview(imgSrc: string) {
+    this.previewImage.set(imgSrc);
+  }
+
+  closePreview() {
+    this.previewImage.set(null);
+  }
+
+  // --- Sending ---
+
   sendMessage() {
     if ((!this.userInput.trim() && !this.selectedImage) || this.isLoading()) return;
+    this.sendConstructedMessage(this.userInput, this.selectedImage);
+  }
 
-    const userContent = this.userInput;
-    const userImage = this.selectedImage;
-
-    // Add user message locally
+  private sendConstructedMessage(content: string, image: string | null) {
     const userMsg: ChatMessage = {
       role: 'user',
-      content: userContent,
-      image: userImage || undefined,
+      content: content,
+      image: image || undefined,
       timestamp: new Date()
     };
 
@@ -107,29 +172,21 @@ export class HomeComponent implements OnInit {
     this.isLoading.set(true);
     this.scrollToBottom();
 
-    // Send to service
-    this.chatService.sendMessage(userContent, userImage).subscribe({
+    this.chatService.sendMessage(content, image).subscribe({
       next: (res) => {
-        // Backend returns { reply, userMessage, assistantMessage }
         if (res && res.assistantMessage) {
           this.messages.update(msgs => [...msgs, res.assistantMessage]);
-          this.isLoading.set(false);
-          this.scrollToBottom();
         } else if (res && res.reply) {
-          // Fallback for legacy/simple backend response
           this.messages.update(msgs => [...msgs, { role: 'assistant', content: res.reply }]);
-          this.isLoading.set(false);
-          this.scrollToBottom();
-        } else {
-          // Fallback for valid response but unknown format
-          this.isLoading.set(false);
         }
+        this.isLoading.set(false);
+        this.scrollToBottom();
       },
       error: (err) => {
         console.error('Error sending message:', err);
         this.messages.update(msgs => [...msgs, {
           role: 'assistant',
-          content: 'Sorry, I encountered an error. Please make sure your API key is configured and try again.'
+          content: 'Error: Could not process request.'
         }]);
         this.isLoading.set(false);
         this.scrollToBottom();
@@ -139,8 +196,6 @@ export class HomeComponent implements OnInit {
 
   copyToClipboard(text: string) {
     navigator.clipboard.writeText(text).then(() => {
-      // Optional: Show toast or feedback
-      console.log('Copied to clipboard');
     });
   }
 

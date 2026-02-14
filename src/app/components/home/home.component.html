@@ -51,7 +51,7 @@
     <div class="chat-hub">
 
       <div class="chat-messages" #scrollMe>
-        <ng-container *ngFor="let msg of messages()">
+        <ng-container *ngFor="let msg of messages(); let i = index">
           <div *ngIf="msg" [class.assistant]="msg.role === 'assistant'" class="message">
             <div class="avatar">
               {{ msg.role === 'assistant' ? '🤖' : '👤' }}
@@ -61,13 +61,29 @@
               <!-- Standard Text / Legacy Message -->
               <div *ngIf="!msg.data" class="message-content" [innerHTML]="msg.content"></div>
 
-              <!-- Structured AI Data - ONLY General Response -->
-              <div *ngIf="msg.data" class="ai-response-container">
-                <div *ngIf="msg.data.generalResponse" [innerHTML]="msg.data.generalResponse"></div>
+              <!-- Message with potential data -->
+              <div *ngIf="msg.data" class="message-content">
+                <div *ngIf="msg.content" [innerHTML]="msg.content"></div>
               </div>
 
               <!-- User Uploaded Image Display -->
-              <img *ngIf="msg.image" [src]="msg.image" class="msg-image" />
+              <img *ngIf="msg.image" [src]="msg.image" class="msg-image clickable-image"
+                (click)="openPreview(msg.image)" />
+
+              <!-- Chips Section (Only for Assistant) -->
+              <div *ngIf="msg.role === 'assistant' && msg.data?.chips?.length > 0" class="chips-container">
+                <div class="chips-list">
+                  <button *ngFor="let chip of msg.data.chips" class="chip" [class.active]="isChipSelected(i, chip)"
+                    (click)="toggleChip(i, chip)">
+                    {{ chip }}
+                  </button>
+                </div>
+                <!-- Submit Chips Button -->
+                <button *ngIf="hasSelectedChips(i)" class="submit-chips-btn" (click)="submitChips(i)">
+                  Generate Response ➞
+                </button>
+              </div>
+
             </div>
           </div>
         </ng-container>
@@ -114,4 +130,13 @@
 
     </div>
   </ng-container>
+
+  <!-- Image Preview Modal -->
+  <div class="image-modal-overlay" *ngIf="previewImage()" (click)="closePreview()">
+    <div class="image-modal-content" (click)="$event.stopPropagation()">
+      <button class="close-modal" (click)="closePreview()">×</button>
+      <img [src]="previewImage()" alt="Preview" />
+    </div>
+  </div>
+
 </div>
