@@ -21,7 +21,12 @@ export class ChatService {
     return this.http.get<any[]>(`${this.apiUrl}/history`, { headers: this.getHeaders() });
   }
 
-  sendMessage(prompt: string, image?: string | null): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/send`, { prompt, image }, { headers: this.getHeaders() });
+  getChatDetails(chatId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/history/${chatId}`, { headers: this.getHeaders() });
+  }
+
+  sendMessage(prompt: string, image?: string | null, chatId?: string | null): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/send`, { prompt, image, chatId }, { headers: this.getHeaders() });
   }
 }
+

@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ChatService } from '../../services/chat';
@@ -29,46 +29,69 @@ export class HomeComponent implements OnInit {
   isLoading = signal(false);
   messages = signal<ChatMessage[]>([]);
 
-  // New: Chips Logic Removed
+  // Multiple Chats logic
+  conversations = signal<any[]>([]);
+  activeChatId = signal<string | null>(null);
+
+  activeChatTitle = computed(() => {
+    const id = this.activeChatId();
+    if (!id) return 'New Chat';
+    const chat = this.conversations().find(c => c._id === id);
+    return chat ? chat.title : 'Current Chat';
+  });
+
 
   // State for image preview
   previewImage = signal<string | null>(null);
 
   // Track selected chips per message ID or index
-  // Map of messageIndex -> Set<string> of selected chips
   selectedChips = new Map<number, Set<string>>();
 
   @ViewChild('scrollMe') private myScrollContainer!: ElementRef;
 
   ngOnInit() {
     if (this.authService.isLoggedIn()) {
-      this.loadHistory();
+      this.loadSessions();
     }
   }
 
-  loadHistory() {
+  loadSessions() {
     this.chatService.getHistory().subscribe({
-      next: (history) => {
-        if (history.length > 0) {
-          const parsedHistory = history.map(msg => {
-            // Parse data if string
-            let data = msg.data;
-            if (msg.role === 'assistant' && typeof msg.content === 'string') {
-              // Existing parse logic if needed, but data should be separate now
-            }
-            return { ...msg, data };
-          });
-          this.messages.set(parsedHistory);
-        } else {
-          this.messages.set([
-            { role: 'assistant', content: 'Hello! I am your Social AI assistant. How can I help you today?' }
-          ]);
+      next: (sessions) => {
+        this.conversations.set(sessions);
+        // Do not automatically load the first one unless the user wants to
+        // If we want to auto-load last chat:
+        if (sessions.length > 0 && !this.activeChatId()) {
+          // this.selectChat(sessions[0]._id);
         }
-        this.scrollToBottom();
       },
-      error: (err) => console.error('Error loading history:', err)
+      error: (err) => console.error('Error loading sessions:', err)
     });
   }
+
+  selectChat(chatId: string) {
+    this.activeChatId.set(chatId);
+    this.isLoading.set(true);
+    this.chatService.getChatDetails(chatId).subscribe({
+      next: (history) => {
+        this.messages.set(history);
+        this.isLoading.set(false);
+        this.scrollToBottom();
+      },
+      error: (err) => {
+        console.error('Error loading chat details:', err);
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  startNewChat() {
+    this.activeChatId.set(null);
+    this.messages.set([
+      { role: 'assistant', content: 'Hello! I am your Social AI assistant. Start a new conversation by sending a message or uploading an image.' }
+    ]);
+  }
+
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
@@ -172,13 +195,20 @@ export class HomeComponent implements OnInit {
     this.isLoading.set(true);
     this.scrollToBottom();
 
-    this.chatService.sendMessage(content, image).subscribe({
+    this.chatService.sendMessage(content, image, this.activeChatId()).subscribe({
       next: (res) => {
         if (res && res.assistantMessage) {
           this.messages.update(msgs => [...msgs, res.assistantMessage]);
         } else if (res && res.reply) {
           this.messages.update(msgs => [...msgs, { role: 'assistant', content: res.reply }]);
         }
+
+        // If this was a new chat, update the activeChatId and refresh sessions
+        if (!this.activeChatId() && res.chatId) {
+          this.activeChatId.set(res.chatId);
+          this.loadSessions(); // Refresh sidebar titles
+        }
+
         this.isLoading.set(false);
         this.scrollToBottom();
       },
@@ -193,6 +223,7 @@ export class HomeComponent implements OnInit {
       }
     });
   }
+
 
   copyToClipboard(text: string) {
     navigator.clipboard.writeText(text).then(() => {

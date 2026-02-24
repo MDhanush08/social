@@ -50,86 +50,110 @@
   <ng-container *ngIf="authService.isLoggedIn()">
     <div class="chat-hub">
 
-      <div class="chat-messages" #scrollMe>
-        <ng-container *ngFor="let msg of messages(); let i = index">
-          <div *ngIf="msg" [class.assistant]="msg.role === 'assistant'" class="message">
-            <div class="avatar">
-              {{ msg.role === 'assistant' ? '🤖' : '👤' }}
-            </div>
-            <div class="message-body">
+      <!-- Sidebar for Sessions -->
+      <aside class="chat-sidebar">
+        <button class="new-chat-btn" (click)="startNewChat()">
+          <span>+</span> New Chat
+        </button>
 
-              <!-- Standard Text / Legacy Message -->
-              <div *ngIf="!msg.data" class="message-content" [innerHTML]="msg.content"></div>
+        <div class="sessions-list">
+          <div *ngFor="let chat of conversations()" class="session-item" [class.active]="activeChatId() === chat._id"
+            (click)="selectChat(chat._id)">
+            <div class="session-icon">💬</div>
+            <div class="session-title">{{ chat.title }}</div>
+          </div>
 
-              <!-- Message with potential data -->
-              <div *ngIf="msg.data" class="message-content">
-                <div *ngIf="msg.content" [innerHTML]="msg.content"></div>
+          <div *ngIf="conversations().length === 0" class="no-sessions">
+            No recent chats
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Chat Area -->
+      <main class="main-chat-area">
+        <div class="chat-header" *ngIf="activeChatId()">
+          {{ activeChatTitle() }}
+        </div>
+
+        <div class="chat-messages" #scrollMe>
+          <ng-container *ngFor="let msg of messages(); let i = index">
+            <div *ngIf="msg" [class.assistant]="msg.role === 'assistant'" class="message">
+              <div class="avatar">
+                {{ msg.role === 'assistant' ? '🤖' : '👤' }}
               </div>
+              <div class="message-body">
+                <!-- Standard Text / Legacy Message -->
+                <div *ngIf="!msg.data" class="message-content" [innerHTML]="msg.content"></div>
 
-              <!-- User Uploaded Image Display -->
-              <img *ngIf="msg.image" [src]="msg.image" class="msg-image clickable-image"
-                (click)="openPreview(msg.image)" />
+                <!-- Message with potential data -->
+                <div *ngIf="msg.data" class="message-content">
+                  <div *ngIf="msg.content" [innerHTML]="msg.content"></div>
+                </div>
 
-              <!-- Chips Section (Only for Assistant) -->
-              <div *ngIf="msg.role === 'assistant' && msg.data?.chips?.length > 0" class="chips-container">
-                <div class="chips-list">
-                  <button *ngFor="let chip of msg.data.chips" class="chip" [class.active]="isChipSelected(i, chip)"
-                    (click)="toggleChip(i, chip)">
-                    {{ chip }}
+                <!-- User Uploaded Image Display -->
+                <img *ngIf="msg.image" [src]="msg.image" class="msg-image clickable-image"
+                  (click)="openPreview(msg.image)" />
+
+                <!-- Chips Section (Only for Assistant) -->
+                <div *ngIf="msg.role === 'assistant' && msg.data?.chips?.length > 0" class="chips-container">
+                  <div class="chips-list">
+                    <button *ngFor="let chip of msg.data.chips" class="chip" [class.active]="isChipSelected(i, chip)"
+                      (click)="toggleChip(i, chip)">
+                      {{ chip }}
+                    </button>
+                  </div>
+                  <!-- Submit Chips Button -->
+                  <button *ngIf="hasSelectedChips(i)" class="submit-chips-btn" (click)="submitChips(i)">
+                    Generate Response ➞
                   </button>
                 </div>
-                <!-- Submit Chips Button -->
-                <button *ngIf="hasSelectedChips(i)" class="submit-chips-btn" (click)="submitChips(i)">
-                  Generate Response ➞
-                </button>
               </div>
+            </div>
+          </ng-container>
 
+          <!-- Loading Indicator -->
+          <div class="message assistant" *ngIf="isLoading()">
+            <div class="avatar">🤖</div>
+            <div class="message-body">
+              <div class="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
             </div>
           </div>
-        </ng-container>
+        </div>
 
-        <!-- Loading Indicator -->
-        <div class="message assistant" *ngIf="isLoading()">
-          <div class="avatar">🤖</div>
-          <div class="message-body">
-            <div class="typing-indicator">
-              <span></span>
-              <span></span>
-              <span></span>
+        <div class="chat-input-area">
+          <div class="image-preview-bar" *ngIf="selectedImage">
+            <div class="preview-item">
+              <img [src]="selectedImage" />
+              <button (click)="removeImage()" class="remove-btn">×</button>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="chat-input-area">
+          <div class="input-wrapper">
+            <label class="action-icon" title="Upload Image">
+              🖼️
+              <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+            </label>
 
-        <div class="image-preview-bar" *ngIf="selectedImage">
-          <div class="preview-item">
-            <img [src]="selectedImage" />
-            <button (click)="removeImage()" class="remove-btn">×</button>
+            <textarea [(ngModel)]="userInput" placeholder="Ask anything..."
+              (keydown.enter)="!isLoading() && sendMessage(); $event.preventDefault()"
+              [disabled]="isLoading()"></textarea>
+
+            <button (click)="sendMessage()" class="send-btn"
+              [disabled]="(!userInput.trim() && !selectedImage) || isLoading()">
+              <span *ngIf="!isLoading()">➞</span>
+              <span *ngIf="isLoading()" class="spinner"></span>
+            </button>
           </div>
         </div>
-
-        <div class="input-wrapper">
-          <label class="action-icon" title="Upload Image">
-            🖼️
-            <input type="file" (change)="onFileSelected($event)" accept="image/*" />
-          </label>
-
-          <textarea [(ngModel)]="userInput" placeholder="Generate anything..."
-            (keydown.enter)="!isLoading() && sendMessage(); $event.preventDefault()"
-            [disabled]="isLoading()"></textarea>
-
-          <button (click)="sendMessage()" class="send-btn"
-            [disabled]="(!userInput.trim() && !selectedImage) || isLoading()">
-            <span *ngIf="!isLoading()">➞</span>
-            <span *ngIf="isLoading()" class="spinner"></span>
-          </button>
-        </div>
-      </div>
+      </main>
 
     </div>
   </ng-container>
+
 
   <!-- Image Preview Modal -->
   <div class="image-modal-overlay" *ngIf="previewImage()" (click)="closePreview()">
