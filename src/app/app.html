@@ -1,9 +1,14 @@
-<div class="app-layout" [class.has-sidebar]="authService.isLoggedIn()">
+<div class="min-h-screen bg-[#0f172a] flex flex-col">
+  <!-- Sidebar (Only for logged in) -->
   <app-sidebar *ngIf="authService.isLoggedIn()"></app-sidebar>
 
-  <div class="main-wrapper">
+  <div class="flex-1 flex flex-col transition-all duration-300"
+    [class.md:pl-72]="authService.isLoggedIn() && !uiService.isSidebarCollapsed()"
+    [class.md:pl-20]="authService.isLoggedIn() && uiService.isSidebarCollapsed()">
+
     <app-navbar></app-navbar>
-    <main class="content">
+
+    <main class="flex-1 flex flex-col">
       <router-outlet></router-outlet>
     </main>
   </div>

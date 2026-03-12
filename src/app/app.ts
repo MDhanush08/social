@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { SidebarComponent } from './components/sidebar/sidebar';
 import { AuthService } from './services/auth.service';
+import { UiService } from './services/ui.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -14,5 +15,6 @@ import { CommonModule } from '@angular/common';
 })
 export class AppComponent {
   authService = inject(AuthService);
+  uiService = inject(UiService);
   title = 'social-hub';
 }

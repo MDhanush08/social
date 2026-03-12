@@ -26,7 +26,7 @@ export class SignupComponent {
 
     this.authService.register(this.userData).subscribe({
       next: () => {
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/chat']);
       },
       error: (err) => {
         this.error = err.error?.message || 'Registration failed. Please try again.';

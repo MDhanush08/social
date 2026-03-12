@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { UiService } from '../../services/ui.service';
@@ -14,4 +14,9 @@ import { UiService } from '../../services/ui.service';
 export class SidebarComponent {
   authService = inject(AuthService);
   uiService = inject(UiService);
+  router = inject(Router);
+
+  isDesktop() {
+    return window.innerWidth >= 768;
+  }
 }
