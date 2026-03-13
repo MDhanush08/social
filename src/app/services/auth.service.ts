@@ -9,7 +9,9 @@ import { Observable, tap } from 'rxjs';
 export class AuthService {
   private apiUrl = 'http://localhost:5000/api/auth';
   private tokenKey = 'auth_token';
+  private userKey = 'auth_user';
   private platformId = inject(PLATFORM_ID);
+
 
   // Use signals for easy state management in modern Angular
   currentUser = signal<any>(null);
@@ -17,9 +19,9 @@ export class AuthService {
   constructor(private http: HttpClient) {
     if (isPlatformBrowser(this.platformId)) {
       const token = localStorage.getItem(this.tokenKey);
-      if (token) {
-        // Decode or validate token if needed, for simplicity we trust it for now
-        this.currentUser.set({ token });
+      const user = localStorage.getItem(this.userKey);
+      if (token && user) {
+        this.currentUser.set(JSON.parse(user));
       }
     }
   }
@@ -39,6 +41,7 @@ export class AuthService {
   logout() {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem(this.tokenKey);
+      localStorage.removeItem(this.userKey);
     }
     this.currentUser.set(null);
   }
@@ -46,9 +49,11 @@ export class AuthService {
   private setSession(authResult: any) {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem(this.tokenKey, authResult.token);
+      localStorage.setItem(this.userKey, JSON.stringify(authResult.user));
     }
     this.currentUser.set(authResult.user);
   }
+
 
   isLoggedIn(): boolean {
     return !!this.currentUser();

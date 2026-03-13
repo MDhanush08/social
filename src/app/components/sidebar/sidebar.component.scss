@@ -1,25 +1,17 @@
+@import 'variables';
+@import 'mixins';
+
 aside {
-  background: linear-gradient(to bottom, #0f172a, #0a0f1d);
+  background: linear-gradient(to bottom, $bg-dark, #0a0f1d);
   overflow: hidden;
 
   .custom-scrollbar {
-    &::-webkit-scrollbar {
-      width: 3px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: rgba(124, 58, 237, 0.1);
-      border-radius: 10px;
-    }
+    @include scrollbar;
   }
 
   .nav-item {
     position: relative;
-    transition: all 0.2s ease;
+    @include smooth-transition(all, $transition-fast);
 
     &:hover {
       background: rgba(255, 255, 255, 0.03);
@@ -27,8 +19,8 @@ aside {
     }
 
     &.active-link {
-      background: linear-gradient(90deg, rgba(124, 58, 237, 0.1) 0%, transparent 100%);
-      color: white;
+      background: linear-gradient(90deg, rgba($primary-color, 0.1) 0%, transparent 100%);
+      color: $text-main;
 
       &::before {
         content: '';
@@ -37,13 +29,13 @@ aside {
         top: 20%;
         height: 60%;
         width: 3px;
-        background: #7c3aed;
+        background: $primary-color;
         border-radius: 0 4px 4px 0;
-        box-shadow: 0 0 10px #7c3aed;
+        box-shadow: 0 0 10px $primary-color;
       }
 
       span:first-child {
-        color: #a855f7;
+        color: $primary-light;
         opacity: 1;
       }
     }

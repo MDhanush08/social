@@ -4,16 +4,17 @@
 @tailwind components;
 @tailwind utilities;
 
-// Common variables and mixins
-$primary-gradient: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-$bg-dark: #0f172a;
-$bg-lighter: #1e293b;
+// Optimized SCSS Architecture
+@import 'styles/variables';
+@import 'styles/mixins';
+@import 'styles/animations';
+@import 'styles/utilities';
 
 :root {
-  --primary: #7c3aed;
-  --primary-glow: rgba(124, 58, 237, 0.5);
-  --glass: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.12);
+  --primary: #{$primary-color};
+  --primary-glow: #{$primary-glow};
+  --glass: #{$glass-bg};
+  --glass-border: #{$glass-border};
 }
 
 * {
@@ -25,10 +26,11 @@ $bg-lighter: #1e293b;
 body {
   font-family: 'Outfit', sans-serif;
   background-color: $bg-dark;
-  color: #fff;
+  color: $text-main;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  @include scrollbar;
 }
 
 .app-layout {
@@ -41,58 +43,16 @@ body {
   flex: 1;
 }
 
-// Glassmorphism Common Style
-.glass-effect {
-  background: var(--glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-}
-
-// Custom animations
-@keyframes shine {
-  0% {
-    background-position: -200% center;
-  }
-
-  100% {
-    background-position: 200% center;
-  }
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in-down {
-  animation: fadeInDown 0.3s ease-out;
-}
-
-.text-gradient {
-  background: $primary-gradient;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  display: inline-block;
-}
-
+// Global Modern Button
 .btn-modern {
-  @apply px-6 py-2.5 rounded-xl font-semibold transition-all duration-300 relative overflow-hidden;
+  @apply px-6 py-2.5 rounded-xl font-semibold relative overflow-hidden;
+  @include smooth-transition;
   background: $primary-gradient;
   color: white;
 
   &:hover {
     @apply shadow-lg scale-105;
-    box-shadow: 0 10px 25px -5px var(--primary-glow);
+    box-shadow: $shadow-lg;
   }
 
   &:active {
@@ -101,41 +61,11 @@ body {
 }
 
 .btn-glass {
-  @apply px-6 py-2.5 rounded-xl font-semibold transition-all duration-300 border border-white/20;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
+  @apply px-6 py-2.5 rounded-xl font-semibold border border-white/20;
+  @include glass-effect(rgba(255, 255, 255, 0.05), 10px);
+  @include smooth-transition;
 
   &:hover {
     @apply bg-white/10 border-white/40;
-  }
-}
-
-// Responsive utilities
-.mobile-hide {
-  @media (max-width: 768px) {
-    display: none !important;
-  }
-}
-
-.mobile-only {
-  @media (min-width: 769px) {
-    display: none !important;
-  }
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: $bg-dark;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-
-  &:hover {
-    background: rgba(124, 58, 237, 0.5);
   }
 }

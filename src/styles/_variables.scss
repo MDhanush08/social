@@ -1,0 +1,55 @@
+// Colors
+$primary-color: #7c3aed;
+$primary-light: #a855f7;
+$primary-gradient: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
+$primary-glow: rgba(124, 58, 237, 0.5);
+
+$bg-dark: #0f172a;
+$bg-darker: #0a0a0a;
+$bg-light: #1e293b;
+
+$text-main: #ffffff;
+$text-muted: rgba(255, 255, 255, 0.7);
+$text-dim: rgba(255, 255, 255, 0.5);
+
+$glass-bg: rgba(255, 255, 255, 0.05);
+$glass-border: rgba(255, 255, 255, 0.12);
+
+// Spacing
+$spacing-xs: 0.5rem;
+$spacing-sm: 1rem;
+$spacing-md: 1.5rem;
+$spacing-lg: 2rem;
+$spacing-xl: 3rem;
+
+// Border Radius
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 16px;
+$radius-xl: 24px;
+$radius-full: 9999px;
+
+// Transitions
+$transition-fast: 0.2s ease;
+$transition-base: 0.3s ease;
+$transition-slow: 0.5s ease;
+$transition-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+// Shadows
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+$shadow-card: 0 10px 40px rgba(0, 0, 0, 0.3);
+$shadow-glow: 0 0 20px rgba(124, 58, 237, 0.2);
+
+// Font Sizes
+$font-xs: 0.75rem;
+$font-sm: 0.875rem;
+$font-base: 1rem;
+$font-lg: 1.125rem;
+$font-xl: 1.25rem;
+$font-2xl: 1.5rem;
+$font-3xl: 2rem;
+$font-4xl: 2.5rem;
+$font-5xl: 3rem;
+$font-hero: 4rem;

@@ -142,7 +142,15 @@ export class ChatComponent implements OnInit {
     this.sendConstructedMessage(this.userInput, this.selectedImage);
   }
 
+  onEnterKey(event: any) {
+    if (!this.isLoading() && !event.shiftKey) {
+      event.preventDefault();
+      this.sendMessage();
+    }
+  }
+
   private sendConstructedMessage(content: string, image: string | null) {
+
     const userMsg: ChatMessage = {
       role: 'user',
       content: content,

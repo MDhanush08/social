@@ -1,17 +1,18 @@
+@import 'variables';
+@import 'mixins';
+
 .home-container {
   min-height: calc(100vh - 80px);
-  background: #0a0a0a;
+  background: $bg-darker;
 }
 
-/* Hero & Features Styles (Keep existing) */
+/* Hero Section */
 .hero {
   position: relative;
   min-height: 80vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   overflow: hidden;
-  padding: 2rem;
+  padding: $spacing-lg;
   text-align: center;
 
   .overlay {
@@ -32,35 +33,35 @@
 }
 
 .hero-title {
-  font-size: 4rem;
+  font-size: $font-hero;
   font-weight: 800;
   line-height: 1.1;
-  margin-bottom: 1.5rem;
-  color: #fff;
+  margin-bottom: $spacing-md;
+  color: $text-main;
 
   span {
-    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    @include text-gradient;
+  }
+
+  @include responsive-helper('md') {
+    font-size: $font-3xl;
   }
 }
 
 .hero-subtitle {
-  font-size: 1.25rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 2.5rem;
+  font-size: $font-xl;
+  color: $text-muted;
+  margin-bottom: $spacing-xl;
 }
 
 .hero-btns {
-  display: flex;
-  gap: 1.5rem;
-  justify-content: center;
+  @include flex-center;
+  gap: $spacing-md;
 }
 
 .btn-lg {
   padding: 1rem 2.5rem;
-  font-size: 1.1rem;
+  font-size: $font-lg;
 }
 
 .floating-blobs {
@@ -82,7 +83,7 @@
   .blob-1 {
     width: 400px;
     height: 400px;
-    background: #7c3aed;
+    background: $primary-color;
     top: -100px;
     left: -100px;
   }
@@ -90,7 +91,7 @@
   .blob-2 {
     width: 300px;
     height: 300px;
-    background: #a855f7;
+    background: $primary-light;
     bottom: -50px;
     right: -50px;
     animation-delay: -5s;
@@ -106,102 +107,86 @@
   }
 }
 
-@keyframes float {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-
-  100% {
-    transform: translate(50px, 50px) scale(1.1);
-  }
-}
-
 /* Features Section */
 .features {
-  padding: 5rem 2rem;
-  background: #0a0a0a;
+  padding: $spacing-xl*1.5 $spacing-lg;
+  background: $bg-darker;
 
   .section-header {
     text-align: center;
-    margin-bottom: 4rem;
+    margin-bottom: $spacing-xl;
 
     h2 {
-      font-size: 2.5rem;
+      font-size: $font-4xl;
       font-weight: 700;
-      color: #fff;
-      margin-bottom: 1rem;
+      color: $text-main;
+      margin-bottom: $spacing-sm;
     }
 
     p {
-      font-size: 1.1rem;
-      color: rgba(255, 255, 255, 0.6);
+      font-size: $font-lg;
+      color: $text-muted;
     }
   }
 
   .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
+    gap: $spacing-lg;
     max-width: 1200px;
     margin: 0 auto;
   }
 
   .feature-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    @include glass-effect;
     border-radius: 20px;
-    padding: 2.5rem;
+    padding: $spacing-xl;
     text-align: center;
-    transition: all 0.3s ease;
+    @include smooth-transition;
 
     &:hover {
       transform: translateY(-5px);
       background: rgba(255, 255, 255, 0.05);
       border-color: rgba(124, 58, 237, 0.3);
-      box-shadow: 0 10px 30px rgba(124, 58, 237, 0.2);
+      box-shadow: $shadow-glow;
     }
 
     .icon {
       font-size: 3rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: $spacing-md;
     }
 
     h3 {
-      font-size: 1.5rem;
+      font-size: $font-2xl;
       font-weight: 600;
-      color: #fff;
-      margin-bottom: 1rem;
+      color: $text-main;
+      margin-bottom: $spacing-sm;
     }
 
     p {
-      color: rgba(255, 255, 255, 0.6);
+      color: $text-muted;
       line-height: 1.6;
     }
   }
 }
 
-/* AI Chat Hub Styles - Gemini/ChatGPT Inspired */
+/* AI Chat Hub Styles */
 .chat-hub {
   max-width: 1200px;
-  margin: 1rem auto;
+  margin: $spacing-sm auto;
   height: calc(100vh - 120px);
   display: flex;
-  flex-direction: row; // Split sidebar and chat
   background: rgba(18, 18, 18, 0.98);
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-xl;
+  border: 1px solid $glass-border;
   overflow: hidden;
   box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8);
 
-  @media (max-width: 992px) {
-    flex-direction: column; // Stack on mobile
+  @include responsive-helper('xl') {
+    flex-direction: column;
     height: auto;
     min-height: calc(100vh - 100px);
-  }
-
-  @media (max-width: 768px) {
-    margin: 0.5rem;
-    border-radius: 16px;
+    margin: $spacing-xs;
   }
 }
 
@@ -209,43 +194,41 @@
 .chat-sidebar {
   width: 260px;
   background: rgba(10, 10, 10, 0.9);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid $glass-border;
   display: flex;
   flex-direction: column;
-  padding: 1.5rem 1rem;
+  padding: $spacing-md $spacing-sm;
   flex-shrink: 0;
 
-  @media (max-width: 992px) {
+  @include responsive-helper('xl') {
     width: 100%;
     border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid $glass-border;
     max-height: 200px;
   }
 }
 
 .new-chat-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #fff;
+  @include glass-effect(rgba(255, 255, 255, 0.05), 5px, rgba(255, 255, 255, 0.15));
+  color: $text-main;
   padding: 0.8rem 1rem;
-  border-radius: 12px;
+  border-radius: $radius-md;
   font-size: 0.95rem;
   cursor: pointer;
-  display: flex;
-  align-items: center;
+  @include flex-center;
   gap: 0.8rem;
-  transition: all 0.3s ease;
-  margin-bottom: 1.5rem;
+  @include smooth-transition;
+  margin-bottom: $spacing-md;
   font-weight: 500;
 
   span {
     font-size: 1.2rem;
-    color: #a855f7;
+    color: $primary-light;
   }
 
   &:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-color: #7c3aed;
+    border-color: $primary-color;
     transform: translateY(-2px);
   }
 }
@@ -255,17 +238,9 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding-right: 0.5rem;
-
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-  }
+  gap: $spacing-xs;
+  padding-right: $spacing-xs;
+  @include scrollbar;
 }
 
 .session-item {
@@ -275,7 +250,7 @@
   padding: 0.8rem;
   border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s;
+  @include smooth-transition;
   border: 1px solid transparent;
 
   .session-icon {
@@ -294,29 +269,26 @@
 
   &:hover {
     background: rgba(255, 255, 255, 0.05);
-    .session-icon { opacity: 0.8; }
+
+    .session-icon {
+      opacity: 0.8;
+    }
   }
 
   &.active {
     background: rgba(124, 58, 237, 0.1);
     border-color: rgba(124, 58, 237, 0.3);
-    
+
     .session-title {
-      color: #fff;
+      color: $text-main;
       font-weight: 500;
     }
+
     .session-icon {
       opacity: 1;
-      color: #a855f7;
+      color: $primary-light;
     }
   }
-}
-
-.no-sessions {
-  text-align: center;
-  padding: 2rem 0;
-  color: rgba(255, 255, 255, 0.3);
-  font-size: 0.85rem;
 }
 
 /* Main Chat Area Styles */
@@ -325,39 +297,27 @@
   display: flex;
   flex-direction: column;
   background: transparent;
-  min-width: 0; // Prevent content from breaking flex
+  min-width: 0;
 }
 
 .chat-header {
-  padding: 1.2rem 2rem;
+  padding: 1.2rem $spacing-lg;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  font-size: 1.1rem;
+  font-size: $font-lg;
   font-weight: 600;
-  color: #fff;
+  color: $text-main;
   background: rgba(0, 0, 0, 0.1);
 }
 
-
-
 .chat-messages {
   flex: 1;
-  padding: 2rem;
+  padding: $spacing-lg;
   overflow-y: auto;
-  min-height: 0;
-  /* Important for flex container scrolling */
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: $spacing-md;
   background-image: radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.05) 0%, transparent 100%);
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-  }
+  @include scrollbar;
 }
 
 .message {
@@ -365,7 +325,7 @@
   gap: 1.2rem;
   max-width: 85%;
   align-self: flex-end;
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn $transition-base;
 
   &.assistant {
     align-self: flex-start;
@@ -380,15 +340,12 @@
   .avatar {
     width: 38px;
     height: 38px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    @include glass-effect(rgba(255, 255, 255, 0.05), 5px, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include flex-center;
     font-size: 1.1rem;
     flex-shrink: 0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: $shadow-sm;
   }
 
   .message-body {
@@ -400,16 +357,10 @@
     color: rgba(255, 255, 255, 0.9);
     position: relative;
 
-    .message-content {
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
     .msg-image {
       max-width: 100%;
-      max-height: 300px;
-      border-radius: 12px;
-      margin-top: 1rem;
+      border-radius: $radius-md;
+      margin-top: $spacing-sm;
       border: 1px solid rgba(255, 255, 255, 0.1);
       display: block;
     }
@@ -418,22 +369,17 @@
 
 /* Typing Indicator */
 .typing-indicator {
-  display: flex;
+  @include flex-center;
   gap: 6px;
   padding: 6px 4px;
-  align-items: center;
 
   span {
     width: 8px;
     height: 8px;
-    background: #a855f7;
+    background: $primary-light;
     border-radius: 50%;
     animation: typing 1.4s infinite ease-in-out;
     box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
-
-    &:nth-child(1) {
-      animation-delay: 0s;
-    }
 
     &:nth-child(2) {
       animation-delay: 0.2s;
@@ -445,104 +391,40 @@
   }
 }
 
-@keyframes typing {
-
-  0%,
-  80%,
-  100% {
-    transform: scale(0.6);
-    opacity: 0.5;
-  }
-
-  40% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* Input Area Styles */
 .chat-input-area {
   flex-shrink: 0;
-  padding: 1.5rem 2rem;
+  padding: $spacing-md $spacing-lg;
   background: rgba(0, 0, 0, 0.2);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
-  /* More subtle border */
   backdrop-filter: blur(10px);
 
-  @media (max-width: 768px) {
-    padding: 1rem;
-  }
-}
-
-.image-preview-bar {
-  margin-bottom: 1rem;
-  display: flex;
-  gap: 1rem;
-
-  .preview-item {
-    position: relative;
-
-    img {
-      height: 70px;
-      width: 70px;
-      object-fit: cover;
-      border-radius: 12px;
-      border: 2px solid #a855f7;
-    }
-
-    .remove-btn {
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      background: #ef4444;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 22px;
-      height: 22px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    }
+  @include responsive-helper('md') {
+    padding: $spacing-sm;
   }
 }
 
 .input-wrapper {
   display: flex;
-  gap: 1rem;
+  gap: $spacing-sm;
   align-items: center;
   background: rgba(255, 255, 255, 0.05);
   padding: 0.6rem 1.2rem;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  @include smooth-transition;
 
   &:focus-within {
-    border-color: #a855f7;
+    border-color: $primary-light;
     background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.1);
+    box-shadow: $shadow-glow;
   }
 
   .action-icon {
     font-size: 1.4rem;
     cursor: pointer;
     opacity: 0.6;
-    transition: all 0.2s;
+    @include smooth-transition;
     user-select: none;
 
     &:hover {
@@ -561,10 +443,9 @@
     border: none;
     color: white;
     padding: 0.8rem 0;
-    font-size: 1rem;
+    font-size: $font-base;
     resize: none;
     max-height: 150px;
-    font-family: inherit;
     line-height: 1.5;
 
     &:focus {
@@ -577,18 +458,16 @@
   }
 
   .send-btn {
-    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    background: $primary-gradient;
     color: white;
     border: none;
     width: 44px;
     height: 44px;
     border-radius: 14px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include flex-center;
     font-size: 1.2rem;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    @include smooth-transition(all, $transition-bounce);
     flex-shrink: 0;
 
     &:disabled {
@@ -614,27 +493,10 @@
   animation: spin 0.8s linear infinite;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* --- New Styles for Chips & AI Structured Response REMOVED --- */
-
-.ai-response-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  width: 100%;
-}
-
-/* --- Image Preview Modal & Chips --- */
-
-/* Clickable image in chat */
+/* Image Preview Modal & Chips */
 .clickable-image {
   cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s;
+  @include smooth-transition;
 
   &:hover {
     transform: scale(1.02);
@@ -642,32 +504,15 @@
   }
 }
 
-/* Chips Container */
-.chips-container {
-  margin-top: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  align-items: flex-start;
-  animation: fadeIn 0.4s ease;
-}
-
-.chips-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-}
-
 .chip {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8);
+  color: $text-muted;
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-  user-select: none;
+  @include smooth-transition;
 
   &:hover {
     background: rgba(255, 255, 255, 0.1);
@@ -675,82 +520,19 @@
   }
 
   &.active {
-    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    background: $primary-gradient;
     border-color: transparent;
     color: white;
     box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
   }
 }
 
-.submit-chips-btn {
-  background: transparent;
-  border: 1px solid #7c3aed;
-  color: #a855f7;
-  padding: 0.4rem 1rem;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  margin-top: 0.2rem;
-  transition: all 0.2s;
-  align-self: flex-start;
-
-  &:hover {
-    background: rgba(124, 58, 237, 0.1);
-  }
-}
-
-/* Modal / Lightbox */
 .image-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: rgba(0, 0, 0, 0.95);
   z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: fadeIn 0.3s ease;
+  @include flex-center;
+  animation: fadeIn $transition-base;
   backdrop-filter: blur(8px);
-}
-
-.image-modal-content {
-  position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  img {
-    max-width: 100%;
-    max-height: 90vh;
-    border-radius: 8px;
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .close-modal {
-    position: absolute;
-    top: -50px;
-    right: -20px;
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 2.5rem;
-    cursor: pointer;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s;
-    z-index: 10000;
-
-    &:hover {
-      transform: scale(1.1) rotate(90deg);
-      color: #ef4444;
-    }
-  }
 }

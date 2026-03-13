@@ -1,73 +1,70 @@
+@import 'variables';
+@import 'mixins';
+
 .dashboard-container {
   max-width: 1200px;
-  margin: 3rem auto;
-  padding: 0 2rem;
+  margin: $spacing-xl auto;
+  padding: 0 $spacing-lg;
 }
 
 .welcome-section {
-  margin-bottom: 4rem;
+  margin-bottom: $spacing-xl;
 
   h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
+    font-size: $font-4xl;
+    margin-bottom: $spacing-xs;
   }
 
   p {
-    color: rgba(255, 255, 255, 0.6);
+    color: $text-muted;
 
     span {
-      color: #a855f7;
+      color: $primary-light;
       font-weight: 600;
     }
   }
 }
 
 .empty-state {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include flex-center;
   min-height: 400px;
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  padding: 4rem 2rem;
-  border-radius: 32px;
+  @include card-style($radius-xl, 4rem 2rem);
   text-align: center;
   max-width: 500px;
 
   .icon {
     font-size: 4rem;
-    margin-bottom: 2rem;
+    margin-bottom: $spacing-lg;
   }
 
   h3 {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-    color: #fff;
+    font-size: $font-3xl;
+    margin-bottom: $spacing-sm;
+    color: $text-main;
   }
 
   p {
-    color: rgba(255, 255, 255, 0.5);
+    color: $text-dim;
     line-height: 1.6;
-    margin-bottom: 2.5rem;
+    margin-bottom: $spacing-xl;
   }
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  background: $primary-gradient;
   color: white;
   padding: 1rem 2.5rem;
   border-radius: 14px;
   text-decoration: none;
   font-weight: 600;
   display: inline-block;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  @include smooth-transition(all, $transition-bounce);
 
   &:hover {
     transform: scale(1.05) translateY(-2px);
-    box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
+    box-shadow: $shadow-glow;
   }
 }

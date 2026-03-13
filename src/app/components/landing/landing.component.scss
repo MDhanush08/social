@@ -1,5 +1,6 @@
-@import "../../../styles.scss";
+@import 'variables';
 
 .landing-container {
   background-attachment: fixed;
+  background-color: $bg-dark;
 }

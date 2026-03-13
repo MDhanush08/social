@@ -1,12 +1,10 @@
+@import 'variables';
+@import 'mixins';
+
 .navbar {
-  // Mostly handled by Tailwind classes in HTML
-  transition: all 0.3s ease;
+  @include smooth-transition;
 }
 
-// Ensure proper spacing for the logo text
 .text-gradient {
-  background: linear-gradient(135deg, #fff 0%, #a855f7 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  @include text-gradient(linear-gradient(135deg, $text-main 0%, $primary-light 100%));
 }

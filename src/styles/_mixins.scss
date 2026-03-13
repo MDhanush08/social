@@ -1,0 +1,85 @@
+@import 'variables';
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin smooth-transition($property: all, $duration: $transition-base) {
+  transition: $property $duration;
+}
+
+@mixin glass-effect($bg: $glass-bg, $blur: 12px, $border: $glass-border) {
+  background: $bg;
+  backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur);
+  border: 1px solid $border;
+}
+
+@mixin card-style($radius: $radius-lg, $padding: $spacing-md) {
+  @include glass-effect;
+  border-radius: $radius;
+  padding: $padding;
+  @include smooth-transition;
+}
+
+@mixin text-gradient($gradient: $primary-gradient) {
+  background: $gradient;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+
+@mixin responsive-helper($breakpoint) {
+  @if $breakpoint =='sm' {
+    @media (max-width: 640px) {
+      @content;
+    }
+  }
+
+  @else if $breakpoint =='md' {
+    @media (max-width: 768px) {
+      @content;
+    }
+  }
+
+  @else if $breakpoint =='lg' {
+    @media (max-width: 1024px) {
+      @content;
+    }
+  }
+
+  @else if $breakpoint =='xl' {
+    @media (max-width: 1280px) {
+      @content;
+    }
+  }
+}
+
+@mixin scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+
+    &:hover {
+      background: $primary-glow;
+    }
+  }
+}
