@@ -8,21 +8,11 @@
   [class.translate-x-0]="uiService.isSidebarOpen() || isDesktop()" *ngIf="authService.isLoggedIn()">
 
   <!-- Sidebar Header with Toggle -->
-  <div class="h-16 flex items-center px-4 transition-all duration-300 border-b border-white/5"
-    [class.justify-center]="isEffectivelyCollapsed" [class.justify-between]="!isEffectivelyCollapsed">
-
-    <div class="flex items-center gap-2 overflow-hidden" *ngIf="!isEffectivelyCollapsed">
-      <div
-        class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center text-sm shadow-lg">
-        ✨</div>
-      <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 truncate">Workspace</span>
-    </div>
-
+  <div class="h-16 flex items-center px-4 transition-all duration-300 border-b border-white/5 gap-3">
     <!-- The Toggle Button -->
     <button
-      class="relative group/toggle flex items-center justify-center p-2 rounded-xl bg-white/5 border border-white/10 hover:border-purple-500/40 hover:bg-purple-500/10 transition-all duration-300 active:scale-90"
+      class="relative group/toggle flex items-center justify-center p-2 rounded-xl bg-white/5 border border-white/10 hover:border-purple-500/40 hover:bg-purple-500/10 transition-all duration-300 active:scale-90 shrink-0"
       (click)="toggleSidebar()" [title]="uiService.isSidebarCollapsed() ? 'Expand' : 'Collapse'">
-
 
       <div class="relative w-5 h-5 flex items-center justify-center transition-all duration-500"
         [class.rotate-180]="isEffectivelyCollapsed">
@@ -35,6 +25,13 @@
         </div>
       </div>
     </button>
+
+    <div class="flex items-center gap-2 overflow-hidden transition-all duration-300" *ngIf="!isEffectivelyCollapsed">
+      <div
+        class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center text-sm shadow-lg shrink-0">
+        ✨</div>
+      <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 truncate">Workspace</span>
+    </div>
   </div>
 
 
