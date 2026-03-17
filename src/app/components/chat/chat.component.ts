@@ -36,6 +36,17 @@ export class ChatComponent implements OnInit {
   selectedChips = new Map<number, Set<string>>();
   isSidebarDesktopOpen = signal(true); // For responsive behavior
 
+  searchQuery = signal<string>('');
+
+  showDeleteModal = signal(false);
+  chatToDelete = signal<string | null>(null);
+
+  filteredConversations = computed(() => {
+    const query = this.searchQuery().toLowerCase().trim();
+    if (!query) return this.conversations();
+    return this.conversations().filter(c => c.title.toLowerCase().includes(query));
+  });
+
   activeChatTitle = computed(() => {
     const id = this.activeChatId();
     if (!id) return 'New Chat';
@@ -88,6 +99,38 @@ export class ChatComponent implements OnInit {
     this.messages.set([
       { role: 'assistant', content: 'Hello! I am your Social AI assistant. Start a new conversation by sending a message or uploading an image.' }
     ]);
+  }
+
+  openDeleteModal(chatId: string, event: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.chatToDelete.set(chatId);
+    this.showDeleteModal.set(true);
+  }
+
+  closeDeleteModal() {
+    this.showDeleteModal.set(false);
+    this.chatToDelete.set(null);
+  }
+
+  confirmDeleteChat() {
+    const chatId = this.chatToDelete();
+    if (!chatId) return;
+
+    this.chatService.deleteChat(chatId).subscribe({
+      next: () => {
+        this.conversations.set(this.conversations().filter(c => c._id !== chatId));
+        if (this.activeChatId() === chatId) {
+          this.startNewChat();
+        }
+        this.closeDeleteModal();
+      },
+      error: (err) => {
+        console.error('Error deleting chat:', err);
+        this.closeDeleteModal();
+      }
+    });
   }
 
   onFileSelected(event: any) {
