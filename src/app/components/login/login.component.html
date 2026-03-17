@@ -1,43 +1,83 @@
-<div class="auth-container">
-  <div class="auth-card">
-    <h2>Welcome Back</h2>
-    <p class="subtitle">Enter your credentials to access your account</p>
+<div class="min-h-[calc(100vh-64px)] flex items-center justify-center p-6 bg-[#0f172a] relative overflow-hidden">
+  <!-- Background Decor -->
+  <div class="absolute top-[20%] left-[10%] w-[30%] h-[30%] bg-purple-600/10 rounded-full blur-[80px]"></div>
+  <div class="absolute bottom-[20%] right-[10%] w-[30%] h-[30%] bg-blue-600/10 rounded-full blur-[80px]"></div>
 
-    <div *ngIf="error" class="error-msg">{{ error }}</div>
+  <div
+    class="w-full max-w-md glass-effect p-8 md:p-10 shadow-2xl relative z-10 animate-in fade-in zoom-in-95 duration-500">
+    <div class="text-center mb-10">
+      <div class="inline-block p-3 rounded-2xl bg-purple-600/20 text-purple-400 mb-4 text-2xl">✨</div>
+      <h2 class="text-3xl font-extrabold text-white tracking-tight">Welcome Back</h2>
+      <p class="text-slate-400 mt-2">Enter your credentials to access your account</p>
+    </div>
 
-    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
-      <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" name="email" [(ngModel)]="credentials.email" placeholder="name@example.com" required
-          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" #email="ngModel"
-          [class.error]="email.invalid && email.touched">
-        <div *ngIf="email.invalid && email.touched" class="field-error">
+    <div *ngIf="error"
+      class="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm animate-in slide-in-from-top-2">
+      <div class="flex items-center gap-2">
+        <span class="text-lg">⚠️</span>
+        {{ error }}
+      </div>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-6">
+      <div class="space-y-2">
+        <label class="block text-sm font-semibold text-slate-300 ml-1">Email Address</label>
+        <div class="relative group">
+          <span
+            class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-purple-400 transition-colors">✉️</span>
+          <input type="email" name="email" [(ngModel)]="credentials.email" placeholder="name@example.com" required
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" #email="ngModel"
+            class="w-full pl-12 pr-4 py-3.5 bg-slate-900 border border-white/10 rounded-xl focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 transition-all text-white placeholder-slate-600 outline-none">
+        </div>
+        <div *ngIf="email.invalid && email.touched" class="text-xs text-red-400 mt-1 ml-1">
           <span *ngIf="email.errors?.['required']">Email is required</span>
-          <span *ngIf="email.errors?.['pattern']">Please enter a valid email address (e.g., .com, .co)</span>
+          <span *ngIf="email.errors?.['pattern']">Please enter a valid email address</span>
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Password</label>
-        <div class="password-input-wrapper">
+      <div class="space-y-2">
+        <label class="block text-sm font-semibold text-slate-300 ml-1">Password</label>
+        <div class="relative group">
+          <span
+            class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-purple-400 transition-colors">🔒</span>
           <input [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="credentials.password"
-            placeholder="••••••••" required #password="ngModel" [class.error]="password.invalid && password.touched">
-          <button type="button" class="password-toggle" (click)="showPassword = !showPassword" tabindex="-1">
+            placeholder="••••••••" required #password="ngModel"
+            class="w-full pl-12 pr-12 py-3.5 bg-slate-900 border border-white/10 rounded-xl focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 transition-all text-white placeholder-slate-600 outline-none">
+          <button type="button" (click)="showPassword = !showPassword"
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
             {{ showPassword ? '👁️' : '👁️‍🗨️' }}
           </button>
         </div>
-        <div *ngIf="password.invalid && password.touched" class="field-error">
+        <div *ngIf="password.invalid && password.touched" class="text-xs text-red-400 mt-1 ml-1">
           Password is required
         </div>
       </div>
 
-      <button type="submit" class="btn btn-primary btn-block" [disabled]="!loginForm.valid || loading">
-        {{ loading ? 'Signing in...' : 'Sign In' }}
+      <div class="flex items-center justify-between px-1">
+        <label class="flex items-center gap-2 cursor-pointer group">
+          <input type="checkbox"
+            class="w-4 h-4 rounded border-white/10 bg-slate-900 text-purple-600 focus:ring-purple-500/20">
+          <span class="text-sm text-slate-400 group-hover:text-slate-200 transition-colors">Remember me</span>
+        </label>
+        <a class="text-sm text-purple-400 hover:text-purple-300 font-medium cursor-pointer">Forgot?</a>
+      </div>
+
+      <button type="submit"
+        class="w-full btn-modern !py-4 text-lg font-bold shadow-purple-500/20 disabled:grayscale disabled:opacity-50"
+        [disabled]="!loginForm.valid || loading">
+        <div class="flex items-center justify-center gap-2">
+          <span *ngIf="loading"
+            class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+          {{ loading ? 'Authenticating...' : 'Sign In' }}
+        </div>
       </button>
     </form>
 
-    <p class="auth-footer">
-      Don't have an account? <a routerLink="/signup">Sign up</a>
-    </p>
+    <div class="mt-8 text-center text-slate-400">
+      Don't have an account?
+      <a routerLink="/signup"
+        class="text-purple-400 font-bold hover:text-purple-300 underline underline-offset-4 decoration-purple-500/30">Create
+        one now</a>
+    </div>
   </div>
 </div>

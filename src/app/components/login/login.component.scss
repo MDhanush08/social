@@ -1,47 +1,40 @@
+@import 'variables';
+@import 'mixins';
+
 .auth-container {
   min-height: calc(100vh - 80px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #0f172a;
-  padding: 2rem;
+  @include flex-center;
+  background: $bg-dark;
+  padding: $spacing-lg;
 }
 
 .auth-card {
   width: 100%;
   max-width: 450px;
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 3rem;
-  color: #fff;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  @include card-style($radius-xl, 3rem);
+  box-shadow: $shadow-card;
 
   h2 {
-    font-size: 2rem;
+    font-size: $font-3xl;
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    margin-bottom: $spacing-xs;
     text-align: center;
-    background: linear-gradient(135deg, #fff 0%, #a855f7 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    @include text-gradient(linear-gradient(135deg, $text-main 0%, $primary-light 100%));
   }
 
   .subtitle {
-    color: rgba(255, 255, 255, 0.6);
+    color: $text-muted;
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: $spacing-xl;
   }
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: $spacing-md;
 
   label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: $spacing-xs;
     font-size: 0.9rem;
     font-weight: 500;
     color: rgba(255, 255, 255, 0.8);
@@ -50,15 +43,14 @@
   input {
     width: 100%;
     padding: 0.8rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    color: #fff;
+    @include glass-effect(rgba(255, 255, 255, 0.05), 8px, rgba(255, 255, 255, 0.1));
+    border-radius: $radius-md;
+    color: $text-main;
     outline: none;
-    transition: all 0.3s ease;
+    @include smooth-transition;
 
     &:focus {
-      border-color: #a855f7;
+      border-color: $primary-light;
       background: rgba(255, 255, 255, 0.08);
       box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.15);
     }
@@ -91,18 +83,16 @@
     right: 0.8rem;
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.6);
+    color: $text-muted;
     cursor: pointer;
     padding: 0.4rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include flex-center;
     font-size: 1.2rem;
-    transition: color 0.3s ease;
+    @include smooth-transition(color);
     user-select: none;
 
     &:hover {
-      color: #fff;
+      color: $text-main;
     }
   }
 }
@@ -119,24 +109,24 @@
   border: 1px solid rgba(239, 68, 68, 0.2);
   color: #f87171;
   padding: 0.8rem;
-  border-radius: 12px;
-  margin-bottom: 1.5rem;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-md;
   font-size: 0.9rem;
   text-align: center;
 }
 
 .btn-block {
   width: 100%;
-  margin-top: 1rem;
+  margin-top: $spacing-sm;
 }
 
 .auth-footer {
   text-align: center;
-  margin-top: 2rem;
-  color: rgba(255, 255, 255, 0.6);
+  margin-top: $spacing-lg;
+  color: $text-muted;
 
   a {
-    color: #a855f7;
+    color: $primary-light;
     text-decoration: none;
     font-weight: 600;
 

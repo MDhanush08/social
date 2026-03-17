@@ -1,5 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Optimized SCSS Architecture
+@import 'styles/variables';
+@import 'styles/mixins';
+@import 'styles/animations';
+@import 'styles/utilities';
+
+:root {
+  --primary: #{$primary-color};
+  --primary-glow: #{$primary-glow};
+  --glass: #{$glass-bg};
+  --glass-border: #{$glass-border};
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -8,10 +25,12 @@
 
 body {
   font-family: 'Outfit', sans-serif;
-  background-color: #0f172a;
-  color: #fff;
+  background-color: $bg-dark;
+  color: $text-main;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  @include scrollbar;
 }
 
 .app-layout {
@@ -24,53 +43,29 @@ body {
   flex: 1;
 }
 
-.btn {
-  font-family: 'Outfit', sans-serif;
-  padding: 0.6rem 1.5rem;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
-  display: inline-block;
-  border: none;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+// Global Modern Button
+.btn-modern {
+  @apply px-6 py-2.5 rounded-xl font-semibold relative overflow-hidden;
+  @include smooth-transition;
+  background: $primary-gradient;
   color: white;
-  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.5);
+    @apply shadow-lg scale-105;
+    box-shadow: $shadow-lg;
+  }
+
+  &:active {
+    @apply scale-95;
   }
 }
 
-.btn-outline {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
+.btn-glass {
+  @apply px-6 py-2.5 rounded-xl font-semibold border border-white/20;
+  @include glass-effect(rgba(255, 255, 255, 0.05), 10px);
+  @include smooth-transition;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: #fff;
-  }
-}
-
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0f172a;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 5px;
-
-  &:hover {
-    background: rgba(168, 85, 247, 0.5);
+    @apply bg-white/10 border-white/40;
   }
 }

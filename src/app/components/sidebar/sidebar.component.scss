@@ -1,0 +1,47 @@
+@import 'variables';
+@import 'mixins';
+
+aside {
+  background: linear-gradient(to bottom, $bg-dark, #0a0f1d);
+  overflow: hidden;
+
+  .custom-scrollbar {
+    @include scrollbar;
+  }
+
+  .nav-item {
+    position: relative;
+    @include smooth-transition(all, $transition-fast);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.03);
+      transform: translateX(2px);
+    }
+
+    &.active-link {
+      background: linear-gradient(90deg, rgba($primary-color, 0.1) 0%, transparent 100%);
+      color: $text-main;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 20%;
+        height: 60%;
+        width: 3px;
+        background: $primary-color;
+        border-radius: 0 4px 4px 0;
+        box-shadow: 0 0 10px $primary-color;
+      }
+
+      span:first-child {
+        color: $primary-light;
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.transition-width {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

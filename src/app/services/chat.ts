@@ -28,5 +28,8 @@ export class ChatService {
   sendMessage(prompt: string, image?: string | null, chatId?: string | null): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/send`, { prompt, image, chatId }, { headers: this.getHeaders() });
   }
-}
 
+  deleteChat(chatId: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/history/${chatId}`, { headers: this.getHeaders() });
+  }
+}

@@ -1,0 +1,42 @@
+@import 'variables';
+@import 'mixins';
+
+.flex-center {
+  @include flex-center;
+}
+
+.text-gradient {
+  @include text-gradient;
+}
+
+.glass-card {
+  @include card-style;
+}
+
+.section-padding {
+  padding: $spacing-xl $spacing-lg;
+
+  @include responsive-helper('md') {
+    padding: $spacing-lg $spacing-sm;
+  }
+}
+
+.smooth-transition {
+  @include smooth-transition;
+}
+
+.custom-scrollbar {
+  @include scrollbar;
+}
+
+.mobile-hide {
+  @include responsive-helper('md') {
+    display: none !important;
+  }
+}
+
+.mobile-only {
+  @media (min-width: 769px) {
+    display: none !important;
+  }
+}
