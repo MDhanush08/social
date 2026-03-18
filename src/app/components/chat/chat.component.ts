@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ChatService } from '../../services/chat';
 import { UiService } from '../../services/ui.service';
@@ -41,6 +41,10 @@ export class ChatComponent implements OnInit {
   showDeleteModal = signal(false);
   chatToDelete = signal<string | null>(null);
 
+  showRenameModal = signal(false);
+  chatToRename = signal<string | null>(null);
+  renameInput = signal<string>('');
+
   filteredConversations = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
     if (!query) return this.conversations();
@@ -57,15 +61,22 @@ export class ChatComponent implements OnInit {
   @ViewChild('scrollMe') private myScrollContainer!: ElementRef;
 
   activatedRoute = inject(ActivatedRoute);
+  router = inject(Router);
 
   ngOnInit() {
     if (this.authService.isLoggedIn()) {
       this.loadSessions();
 
-      // Detect chat selection from sidebar
-      this.activatedRoute.queryParams.subscribe(params => {
-        if (params['id'] && params['id'] !== this.activeChatId()) {
-          this.selectChat(params['id']);
+      // Detect chat selection from parameter
+      this.activatedRoute.paramMap.subscribe(params => {
+        const id = params.get('id');
+        if (id && id !== this.activeChatId()) {
+          this.selectChat(id);
+        } else if (!id) {
+          this.activeChatId.set(null);
+          this.messages.set([
+            { role: 'assistant', content: 'Hello! I am your Social AI assistant. Start a new conversation by sending a message or uploading an image.' }
+          ]);
         }
       });
     }
@@ -95,10 +106,7 @@ export class ChatComponent implements OnInit {
   }
 
   startNewChat() {
-    this.activeChatId.set(null);
-    this.messages.set([
-      { role: 'assistant', content: 'Hello! I am your Social AI assistant. Start a new conversation by sending a message or uploading an image.' }
-    ]);
+    this.router.navigate(['/chat']);
   }
 
   openDeleteModal(chatId: string, event: Event) {
@@ -129,6 +137,40 @@ export class ChatComponent implements OnInit {
       error: (err) => {
         console.error('Error deleting chat:', err);
         this.closeDeleteModal();
+      }
+    });
+  }
+
+  openRenameModal(chat: any, event: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.chatToRename.set(chat._id);
+    this.renameInput.set(chat.title);
+    this.showRenameModal.set(true);
+  }
+
+  closeRenameModal() {
+    this.showRenameModal.set(false);
+    this.chatToRename.set(null);
+    this.renameInput.set('');
+  }
+
+  confirmRenameChat() {
+    const chatId = this.chatToRename();
+    const newTitle = this.renameInput().trim();
+    if (!chatId || !newTitle) return;
+
+    this.chatService.renameChat(chatId, newTitle).subscribe({
+      next: () => {
+        this.conversations.update(convos =>
+          convos.map(c => c._id === chatId ? { ...c, title: newTitle } : c)
+        );
+        this.closeRenameModal();
+      },
+      error: (err) => {
+        console.error('Error renaming chat:', err);
+        this.closeRenameModal();
       }
     });
   }
@@ -218,6 +260,8 @@ export class ChatComponent implements OnInit {
         if (!this.activeChatId() && res.chatId) {
           this.activeChatId.set(res.chatId);
           this.loadSessions();
+          // Update URL without reloading component state
+          this.router.navigate(['/chat', res.chatId], { replaceUrl: true });
         }
 
         this.isLoading.set(false);

@@ -32,4 +32,8 @@ export class ChatService {
   deleteChat(chatId: string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/history/${chatId}`, { headers: this.getHeaders() });
   }
+
+  renameChat(chatId: string, title: string): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/history/${chatId}`, { title }, { headers: this.getHeaders() });
+  }
 }
