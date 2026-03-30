@@ -52,6 +52,14 @@ export class AuthService {
     this.currentUser.set(null);
   }
 
+  setSessionFromParams(token: string, user: string) {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(this.tokenKey, token);
+      localStorage.setItem(this.userKey, user);
+      this.currentUser.set(JSON.parse(user));
+    }
+  }
+
   private setSession(authResult: any) {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem(this.tokenKey, authResult.token);

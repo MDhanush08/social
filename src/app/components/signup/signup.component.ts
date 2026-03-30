@@ -24,9 +24,15 @@ export class SignupComponent implements OnInit {
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      // Initialize Google login after component is ready
-      setTimeout(() => this.initializeGoogleLogin(), 100);
+      // Initialize Social logins after component is ready
+      setTimeout(() => {
+        this.initializeGoogleLogin();
+      }, 100);
     }
+  }
+
+  loginWithFacebook() {
+    window.location.href = 'http://localhost:5000/api/auth/facebook';
   }
 
   private initializeGoogleLogin() {
