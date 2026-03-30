@@ -9,6 +9,7 @@ import { authGuard } from './guards/auth.guard';
 import { inject } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
+import { CreatePostComponent } from './components/create-post/create-post.component';
 
 export const routes: Routes = [
   {
@@ -63,5 +64,6 @@ export const routes: Routes = [
   },
 
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
+  { path: 'create-post', component: CreatePostComponent, canActivate: [authGuard], title: 'Create Social Post' },
   { path: '**', redirectTo: '' }
 ];

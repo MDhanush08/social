@@ -38,6 +38,12 @@ export class AuthService {
     );
   }
 
+  googleLogin(token: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/google-login`, { token }).pipe(
+      tap((res: any) => this.setSession(res))
+    );
+  }
+
   logout() {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem(this.tokenKey);

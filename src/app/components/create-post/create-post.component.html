@@ -1,0 +1,163 @@
+<div class="create-post-container p-6 w-full max-w-4xl mx-auto min-h-screen pt-24 text-white">
+  <div class="header-section mb-8">
+    <h1 class="text-3xl font-black tracking-tight flex items-center gap-3">
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">
+        Create Social Post
+      </span>
+      <span class="text-2xl">✨</span>
+    </h1>
+    <p class="text-slate-400 mt-2 text-sm">Design and publish your content across multiple platforms simultaneously.</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Form Content -->
+    <div class="lg:col-span-2 space-y-6 bg-[#16213e] p-6 rounded-2xl border border-white/5 shadow-xl">
+
+      <!-- Platform Selection -->
+      <div class="form-group">
+        <label class="block text-sm font-bold text-slate-300 mb-2">Platform</label>
+        <div class="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
+          <button *ngFor="let plat of platforms" (click)="platform = plat"
+            class="px-5 py-2.5 rounded-xl border transition-all duration-300 items-center justify-center flex whitespace-nowrap"
+            [class.bg-purple-500]="platform === plat" [class.border-purple-500]="platform === plat"
+            [class.text-white]="platform === plat" [class.bg-white]="platform !== plat"
+            [class.bg-opacity-5]="platform !== plat" [class.border-white]="platform !== plat"
+            [class.border-opacity-10]="platform !== plat" [class.text-slate-400]="platform !== plat">
+            {{ plat }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Media Upload -->
+      <div class="form-group">
+        <label class="block text-sm font-bold text-slate-300 mb-2">Media</label>
+        <div
+          class="upload-container relative group border-2 border-dashed border-white/10 hover:border-purple-500/50 rounded-2xl p-8 transition-all flex flex-col items-center justify-center min-h-[200px] overflow-hidden bg-black/20"
+          [class.border-none]="imagePreview" [class.p-0]="imagePreview">
+
+          <ng-container *ngIf="!imagePreview">
+            <div class="text-4xl mb-3 opacity-50 group-hover:scale-110 transition-transform duration-300">📸</div>
+            <p class="text-sm text-slate-400 mb-1">Drag and drop your media here, or <span
+                class="text-purple-400 font-bold group-hover:underline">browse</span></p>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Supports JPG, PNG & MP4</p>
+          </ng-container>
+
+          <ng-container *ngIf="imagePreview">
+            <img [src]="imagePreview" class="w-full h-full object-cover" alt="Preview" />
+            <button (click)="removeImage()"
+              class="absolute top-4 right-4 bg-black/60 text-white p-2 rounded-full hover:bg-red-500 transition-colors backdrop-blur-sm z-10">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd" />
+              </svg>
+            </button>
+          </ng-container>
+
+          <input type="file" (change)="onFileSelected($event)" accept="image/*,video/*"
+            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0" *ngIf="!imagePreview" />
+        </div>
+      </div>
+
+      <!-- Title Input -->
+      <div class="form-group relative">
+        <label class="block text-sm font-bold text-slate-300 mb-2">Title</label>
+        <input type="text" [(ngModel)]="title" placeholder="Catchy title for your post..."
+          class="w-full bg-black/20 text-white rounded-xl px-4 py-3 border border-white/10 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all outline-none" />
+      </div>
+
+      <!-- Description/Caption Input -->
+      <div class="form-group relative">
+        <label class="block text-sm font-bold text-slate-300 mb-2">Caption</label>
+        <textarea [(ngModel)]="description" rows="4" placeholder="Write an engaging caption..."
+          class="w-full bg-black/20 text-white rounded-xl px-4 py-3 border border-white/10 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all outline-none resize-none"></textarea>
+      </div>
+
+      <!-- Hashtags Input -->
+      <div class="form-group relative">
+        <label class="block text-sm font-bold text-slate-300 mb-2">Hashtags</label>
+        <input type="text" [(ngModel)]="hashtags" placeholder="#marketing #socialmedia, comma separated..."
+          class="w-full bg-black/20 text-white rounded-xl px-4 py-3 border border-white/10 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all outline-none" />
+      </div>
+
+    </div>
+
+    <!-- Live Preview & Publish Box -->
+    <div class="space-y-6">
+      <div
+        class="bg-gradient-to-b from-purple-500/10 to-blue-500/10 p-6 rounded-2xl border border-purple-500/20 shadow-[0_0_30px_rgba(168,85,247,0.1)] backdrop-blur-md sticky top-24">
+        <h3 class="text-sm uppercase tracking-widest font-black text-slate-400 mb-4 flex items-center justify-between">
+          <span>Live Preview</span>
+          <span class="text-purple-400">{{ platform }}</span>
+        </h3>
+
+        <div class="preview-card bg-white/5 rounded-xl overflow-hidden border border-white/10">
+          <div class="p-3 flex items-center gap-3 border-b border-white/5">
+            <div
+              class="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-xs shadow-inner">
+              U</div>
+            <div class="flex flex-col">
+              <span class="text-xs font-bold text-white">Your Brand</span>
+              <span class="text-[10px] text-slate-400">Just now • 🌍</span>
+            </div>
+          </div>
+
+          <div class="p-3">
+            <h4 class="text-sm font-bold text-white mb-1" *ngIf="title">{{ title }}</h4>
+            <p class="text-xs text-slate-300 whitespace-pre-wrap leading-relaxed">{{ description || 'Your caption will
+              appear here...' }}</p>
+            <p class="text-xs text-blue-400 mt-2 font-medium" *ngIf="hashtags">{{ hashtags }}</p>
+          </div>
+
+          <div class="media-preview w-full h-40 bg-black/40 flex items-center justify-center" *ngIf="imagePreview">
+            <img [src]="imagePreview" class="w-full h-full object-cover" />
+          </div>
+          <div class="media-preview w-full h-32 bg-black/40 flex flex-col items-center justify-center text-slate-600"
+            *ngIf="!imagePreview">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-8 h-8 mb-2 opacity-50">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+            </svg>
+            <span class="text-[10px] font-bold uppercase tracking-wider">No Media Attached</span>
+          </div>
+
+          <div class="p-2 border-t border-white/5 flex justify-between px-4">
+            <span class="text-xs text-slate-500 hover:text-white transition-colors cursor-pointer">👍 Like</span>
+            <span class="text-xs text-slate-500 hover:text-white transition-colors cursor-pointer">💬 Comment</span>
+            <span class="text-xs text-slate-500 hover:text-white transition-colors cursor-pointer">↗️ Share</span>
+          </div>
+        </div>
+
+        <button (click)="onSubmit()" [disabled]="isLoading"
+          class="w-full mt-6 py-4 rounded-xl font-black text-sm uppercase tracking-widest text-white transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg relative overflow-hidden group"
+          [class.bg-gradient-to-r]="!isLoading" [class.from-purple-600]="!isLoading" [class.to-blue-600]="!isLoading"
+          [class.hover:shadow-purple-500/25]="!isLoading" [class.bg-slate-700]="isLoading"
+          [class.cursor-not-allowed]="isLoading">
+          <span class="relative z-10 flex items-center justify-center gap-2">
+            <ng-container *ngIf="!isLoading">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+              </svg>
+              Publish Now
+            </ng-container>
+            <ng-container *ngIf="isLoading">
+              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+              </svg>
+              Publishing...
+            </ng-container>
+          </span>
+          <div
+            class="absolute inset-0 h-full w-full bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"
+            *ngIf="!isLoading"></div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
